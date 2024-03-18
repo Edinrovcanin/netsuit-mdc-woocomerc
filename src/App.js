@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+// App.js
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import WooCommerceService from './services/woocommerceService';
 
 function App() {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const ordersData = await WooCommerceService.getOrders();
+        setOrders(ordersData);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Orders from WooCommerce - potrebno unijeti prave endpointe </h1>
+      <ul>
+        {orders.map(order => (
+          <li key={order.id}>{order.order_number} - {order.total}</li>
+        ))}
+      </ul>
     </div>
   );
 }
